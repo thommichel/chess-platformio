@@ -38,20 +38,20 @@ void setup() {
   motors[0] = m1;
   motors[1] = m2;
   motors[2] = m3;
-  motors[2].set_max_speed(100);
-  motors[2].set_acceleration(20);
-  motors[2].move_relative(500);
+  motors[2].set_max_speed(500);
+  motors[2].set_acceleration(750);
+  motors[2].move_relative(200*10);
+  motors[1].set_max_speed(500);
+  motors[1].set_acceleration(750);
+  motors[1].move_relative(200*10);
 }
 
 void loop() {
-  // int i = 0;
-  // for(; i < NUM_MTRS; ++i) {
-  //   handle_user_input();
-  //   motors[i].update();
-  // }
-  motors[2].update();
-  // motors[0].update();
-  // m3._spi_step_forward();
+  int i = 0;
+  for(; i < NUM_MTRS; ++i) {
+    handle_user_input();
+    motors[i].update();
+  }
 }
 
 /*

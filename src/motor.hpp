@@ -15,6 +15,7 @@ namespace mtr {
             bool m_lim_neg;
             bool m_lim_pos;
             u_int8_t m_select;
+            int m_dir;
 
         public:
             Motor();

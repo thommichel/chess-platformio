@@ -1,10 +1,10 @@
 #include <AccelStepper.h>
 #include "motor.hpp"
 #include <ezButton.h>
-#include <SPI.h>
+
 namespace mtr {
-    Motor::Motor(): m_homing(false), m_enabled(false), m_lim_n(NOT_A_PIN), m_lim_p(NOT_A_PIN), m_lim_neg(false), m_lim_pos(false) {}
-    Motor::Motor(uint8_t select, uint8_t lim_neg, uint8_t lim_pos): m_select(select), m_homing(false), m_enabled(false), m_lim_n(lim_neg), m_lim_p(lim_pos), m_lim_neg(false), m_lim_pos(false)
+    Motor::Motor(): m_homing(false), m_enabled(false), m_lim_n(NOT_A_PIN), m_lim_p(NOT_A_PIN), m_lim_neg(false), m_lim_pos(false), m_dir(-1)  {}
+    Motor::Motor(uint8_t select, uint8_t lim_neg, uint8_t lim_pos): m_dir(-1), m_select(select), m_homing(false), m_enabled(false), m_lim_n(lim_neg), m_lim_p(lim_pos), m_lim_neg(false), m_lim_pos(false)
     {
         m_lim_n.setDebounceTime(10);
         m_lim_p.setDebounceTime(10);
@@ -13,7 +13,6 @@ namespace mtr {
     }
 
     void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA) {
-        Serial.println("Driver Setup!");
         m_driver.setChipSelectPin(m_select);
         m_driver.resetSettings();
         m_driver.clearFaults();
@@ -26,18 +25,21 @@ namespace mtr {
     }
 
     void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)()) {
-        setup_driver(forward_func, backwards_func, 500);
+        setup_driver(forward_func, backwards_func, 1000);
     }
 
     void Motor::_spi_step_forward() {
-        // Serial.println("Forward called");
-        m_driver.setDirection(0);
+        if (m_dir != 0) {
+            m_driver.setDirection(0);
+            m_dir = 0;
+        }
         m_driver.step();
-        // Serial.println("Forward over");
     }
     void Motor::_spi_step_backwards() {
-        // Serial.println("Backwards called");
-        m_driver.setDirection(1);
+        if (m_dir != 1) {
+            m_driver.setDirection(1);
+            m_dir = 1;
+        }
         m_driver.step();
     }
 
@@ -65,23 +67,18 @@ namespace mtr {
     }
 
     void Motor::update() {
-        // if((!m_lim_pos && get_lim_pos()) || (!m_lim_neg && get_lim_neg())) {
-        //     Serial.println("Hit Limit");
-        //     m_motor.setCurrentPosition(m_motor.currentPosition());
-        // } 
+        if((!m_lim_pos && get_lim_pos()) || (!m_lim_neg && get_lim_neg())) {
+            m_motor.setCurrentPosition(m_motor.currentPosition());
+        } 
         if(is_moving() && !m_enabled) {
-            // Serial.println("Starting to move");
             enable_motor(true);
             m_motor.run();
         } else if(is_moving()) {
-            // Serial.println("Moving");
             m_motor.run();
         } else if(!is_moving() && m_enabled) {
-            // Serial.println("Reached destination");
             enable_motor(false);
         }
         m_motor.run();
-        // Serial.println("Update Called");
     }
 
     void Motor::stop() {
@@ -111,11 +108,9 @@ namespace mtr {
     }
     void Motor::enable_motor(bool enable) {
         if(m_enabled != enable) {
-            // m_motor.enableOutputs();
             m_enabled = enable;
         }
         else {
-            // m_motor.disableOutputs();
             m_enabled = enable;
         }
     }
