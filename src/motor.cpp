@@ -4,7 +4,7 @@
 
 namespace mtr {
     Motor::Motor(): m_homing(false), m_enabled(false), m_home_lim(NOT_A_PIN), m_home_lim_hit(false), m_dir(-1)  {}
-    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
+    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_motor_current(motor_current), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
     {
         m_slow_speed = m_default_speed/3;
         m_fine_speed = m_default_speed/5;
@@ -12,11 +12,11 @@ namespace mtr {
         m_home_lim_hit = m_home_lim.getState();
     }
 
-    void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA) {
+    void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)()) {
         m_driver.setChipSelectPin(m_select);
         m_driver.resetSettings();
         m_driver.clearFaults();
-        m_driver.setCurrentMilliamps(starting_mA);
+        m_driver.setCurrentMilliamps(m_motor_current);
         set_micro_step(m_micro_res);
         m_driver.enableSPIDirection();
         m_driver.enableSPIStep();

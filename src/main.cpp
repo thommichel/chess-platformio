@@ -7,10 +7,11 @@
 // Serial constants
 #define BAUD_RATE 9600
 
-// Nema 17 specific constants 
+// Folger Tech Nema 17 constants 
 #define FOLGER_TECH_ACCEL 750
 #define FOLGER_TECH_SPEED 500
 #define FOLGER_TECH_STEPS_PER_REV 200
+#define FOLGER_TECH_MILLIAMPS 1000
 
 // Lead Screw constants
 #define LEAD_MM 4
@@ -24,9 +25,9 @@
 #define Z_LIM 3
 #define ELEC_MAG 3
 
-mtr::Motor x_axis(X_SPI_SEL, X_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED);
-mtr::Motor y_axis(Y_SPI_SEL, Y_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED);
-mtr::Motor z_axis(Z_SPI_SEL, Z_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED);
+mtr::Motor x_axis(X_SPI_SEL, X_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED, FOLGER_TECH_MILLIAMPS);
+mtr::Motor y_axis(Y_SPI_SEL, Y_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED, FOLGER_TECH_MILLIAMPS);
+mtr::Motor z_axis(Z_SPI_SEL, Z_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED, FOLGER_TECH_MILLIAMPS);
 
 gnt::Gantry three_dof(x_axis, y_axis, z_axis, ELEC_MAG);
 
@@ -45,7 +46,7 @@ void setup() {
 }
 
 void loop() {
-  cmd::handle_user_input();
+  cmd::handle_user_input(three_dof);
   three_dof.update();
 }
 

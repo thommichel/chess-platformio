@@ -21,6 +21,7 @@ namespace mtr {
             float m_default_speed;
             float m_slow_speed;
             float m_fine_speed;
+            uint16_t m_motor_current;
 
             uint16_t m_steps_per_rev;
             uint8_t m_lead_mm;
@@ -28,10 +29,9 @@ namespace mtr {
             float _steps_to_mm(long steps);
         public:
             Motor();
-            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed);
+            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current);
 
             void setup_driver(void (*forward_func)(), void (*backwards_func)());
-            void setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA);
             void set_current_mA(uint16_t current);
             void set_micro_step(uint8_t resolution);
             void _spi_step_forward();
