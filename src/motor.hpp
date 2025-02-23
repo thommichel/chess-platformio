@@ -1,7 +1,7 @@
 #include <AccelStepper.h>
 #include <ezButton.h>
 #include <DRV8434S.h>
-#ifndef MOTOR_HPP // Check if the macro is not defined
+#ifndef MOTOR_HPP
 #define MOTOR_HPP
 namespace mtr {
     class Motor {
@@ -17,13 +17,18 @@ namespace mtr {
             bool m_enabled;
             uint16_t m_micro_res;
 
+            float m_default_acc;
+            float m_default_speed;
+            float m_slow_speed;
+            float m_fine_speed;
+
             uint16_t m_steps_per_rev;
             uint8_t m_lead_mm;
             long _mm_to_steps(float mm);
             float _steps_to_mm(long steps);
         public:
             Motor();
-            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm);
+            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed);
 
             void setup_driver(void (*forward_func)(), void (*backwards_func)());
             void setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA);
@@ -41,12 +46,18 @@ namespace mtr {
             void set_current_posn(long position);
             void set_max_speed(float speed);
             void set_speed(float speed);
+            void set_default_speed(float speed);
+            void set_slow_speed(float speed);
+            void set_fine_speed(float speed);
             void set_acceleration(float acceleration);
             void set_limit_debounce_interval(unsigned long ms);
             void enable_motor(bool enable);
 
             long get_current_posn();
             float get_speed();
+            float get_default_speed();
+            float get_slow_speed();
+            float get_fine_speed();
             float get_max_speed();
             float get_acceleration();
             bool get_home_lim();

@@ -4,8 +4,10 @@
 
 namespace mtr {
     Motor::Motor(): m_homing(false), m_enabled(false), m_home_lim(NOT_A_PIN), m_home_lim_hit(false), m_dir(-1)  {}
-    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(), m_lead_mm(lead_mm), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
+    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
     {
+        m_slow_speed = m_default_speed/3;
+        m_fine_speed = m_default_speed/5;
         m_home_lim.setDebounceTime(10);
         m_home_lim_hit = m_home_lim.getState();
     }
@@ -20,10 +22,8 @@ namespace mtr {
         m_driver.enableSPIStep();
         m_driver.enableDriver();
         m_motor = AccelStepper(forward_func, backwards_func);
-    }
-
-    void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)()) {
-        setup_driver(forward_func, backwards_func, 1000);
+        m_motor.setMaxSpeed(m_default_speed);
+        m_motor.setAcceleration(m_default_acc);
     }
     
     void Motor::set_current_mA(uint16_t current) {
@@ -97,6 +97,15 @@ namespace mtr {
     void Motor::set_speed(float speed) {
         m_motor.setSpeed(speed);
     }
+    void Motor::set_default_speed(float speed) {
+        m_default_speed = speed;
+    }
+    void Motor::set_slow_speed(float speed) {
+        m_slow_speed = speed;
+    }
+    void Motor::set_fine_speed(float speed) {
+        m_fine_speed = speed;
+    }
     void Motor::set_acceleration(float acceleration) {
         m_motor.setAcceleration(acceleration);
     }
@@ -118,6 +127,15 @@ namespace mtr {
     }
     float Motor::get_speed() {
         return m_motor.speed();
+    }
+    float Motor::get_default_speed() {
+        return m_default_speed;
+    }
+    float Motor::get_slow_speed() {
+        return m_slow_speed;
+    }
+    float Motor::get_fine_speed() {
+        return m_fine_speed;
     }
     float Motor::get_max_speed() {
         return m_motor.maxSpeed();

@@ -1,68 +1,68 @@
 #include "motor.hpp"
+#include "gantry.hpp"
 #include "input_handler.hpp"
 #include <Arduino.h>
 #include <SPI.h>
 
-#define NUM_MTRS 3
+// Serial constants
 #define BAUD_RATE 9600
-#define FOLGER_TECH_MAX_SPEED 500
+
+// Nema 17 specific constants 
+#define FOLGER_TECH_ACCEL 750
+#define FOLGER_TECH_SPEED 500
 #define FOLGER_TECH_STEPS_PER_REV 200
+
+// Lead Screw constants
 #define LEAD_MM 4
 
-mtr::Motor m1(2, 3, FOLGER_TECH_STEPS_PER_REV, LEAD_MM);
-mtr::Motor m2(21, 3, FOLGER_TECH_STEPS_PER_REV, LEAD_MM);
-mtr::Motor m3(22, 3, FOLGER_TECH_STEPS_PER_REV, LEAD_MM);
+// Pin constants
+#define X_SPI_SEL 2
+#define Y_SPI_SEL 21
+#define Z_SPI_SEL 22
+#define X_LIM 3
+#define Y_LIM 3
+#define Z_LIM 3
+#define ELEC_MAG 3
 
-mtr::Motor motors[NUM_MTRS];
+mtr::Motor x_axis(X_SPI_SEL, X_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED);
+mtr::Motor y_axis(Y_SPI_SEL, Y_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED);
+mtr::Motor z_axis(Z_SPI_SEL, Z_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED);
 
-void m1_f();
-void m1_b();
-void m2_f();
-void m2_b();
-void m3_f();
-void m3_b();
+gnt::Gantry three_dof(x_axis, y_axis, z_axis, ELEC_MAG);
+
+void x_axis_f();
+void x_axis_b();
+void y_axis_f();
+void y_axis_b();
+void z_axis_f();
+void z_axis_b();
 
 void setup() {
   SPI.begin();
-  Serial.println("Starting program...");
   Serial.begin(BAUD_RATE);
   delay(1);
-  m1.setup_driver(m1_f, m1_b);
-  m2.setup_driver(m2_f, m2_b);
-  m3.setup_driver(m3_f, m3_b);
-  motors[0] = m1;
-  motors[1] = m2;
-  motors[2] = m3;
-  motors[2].set_max_speed(500);
-  motors[2].set_acceleration(750);
-  motors[2].move_relative(200*10);
-  motors[1].set_max_speed(500);
-  motors[1].set_acceleration(750);
-  motors[1].move_relative(200*10);
+  three_dof.setup_drivers(x_axis_f, x_axis_b, y_axis_f, y_axis_b, z_axis_f, z_axis_b);
 }
 
 void loop() {
-  int i = 0;
-  for(; i < NUM_MTRS; ++i) {
-    cmd::handle_user_input();
-    motors[i].update();
-  }
+  cmd::handle_user_input();
+  three_dof.update();
 }
 
-void m1_f() {
-  m1._spi_step_forward();
+void x_axis_f() {
+  x_axis._spi_step_forward();
 }
-void m1_b() {
-  m1._spi_step_backwards();
+void x_axis_b() {
+  x_axis._spi_step_backwards();
 }
-void m2_f() {
-  m2._spi_step_forward();
+void y_axis_f() {
+  y_axis._spi_step_forward();
 }
-void m2_b() {
-  m2._spi_step_backwards();
-}void m3_f() {
-  m3._spi_step_forward();
+void y_axis_b() {
+  y_axis._spi_step_backwards();
+}void z_axis_f() {
+  z_axis._spi_step_forward();
 }
-void m3_b() {
-  m3._spi_step_backwards();
+void z_axis_b() {
+  z_axis._spi_step_backwards();
 }
