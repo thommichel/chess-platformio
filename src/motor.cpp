@@ -3,13 +3,11 @@
 #include <ezButton.h>
 
 namespace mtr {
-    Motor::Motor(): m_homing(false), m_enabled(false), m_lim_n(NOT_A_PIN), m_lim_p(NOT_A_PIN), m_lim_neg(false), m_lim_pos(false), m_dir(-1)  {}
-    Motor::Motor(uint8_t select, uint8_t lim_neg, uint8_t lim_pos): m_dir(-1), m_select(select), m_homing(false), m_enabled(false), m_lim_n(lim_neg), m_lim_p(lim_pos), m_lim_neg(false), m_lim_pos(false)
+    Motor::Motor(): m_homing(false), m_enabled(false), m_home_lim(NOT_A_PIN), m_home_lim_hit(false), m_dir(-1)  {}
+    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(), m_lead_mm(lead_mm), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
     {
-        m_lim_n.setDebounceTime(10);
-        m_lim_p.setDebounceTime(10);
-        m_lim_neg = m_lim_n.getState();
-        m_lim_pos = m_lim_p.getState();
+        m_home_lim.setDebounceTime(10);
+        m_home_lim_hit = m_home_lim.getState();
     }
 
     void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA) {
@@ -17,7 +15,7 @@ namespace mtr {
         m_driver.resetSettings();
         m_driver.clearFaults();
         m_driver.setCurrentMilliamps(starting_mA);
-        m_driver.setStepMode(DRV8434SStepMode::MicroStep1);
+        set_micro_step(m_micro_res);
         m_driver.enableSPIDirection();
         m_driver.enableSPIStep();
         m_driver.enableDriver();
@@ -26,6 +24,15 @@ namespace mtr {
 
     void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)()) {
         setup_driver(forward_func, backwards_func, 1000);
+    }
+    
+    void Motor::set_current_mA(uint16_t current) {
+        m_driver.setCurrentMilliamps(current);
+    }
+
+    void Motor::set_micro_step(uint8_t resolution) {
+        m_driver.setStepMode(resolution);
+        m_micro_res = resolution;
     }
 
     void Motor::_spi_step_forward() {
@@ -43,31 +50,22 @@ namespace mtr {
         m_driver.step();
     }
 
-    void Motor::move_absolute(long absolute) {
-        if(!((m_lim_pos && absolute > get_current_posn()) || (m_lim_neg && absolute < get_current_posn()))) {
-            m_motor.moveTo(absolute);
-            m_lim_neg = false;
-            m_lim_pos = false;
+    void Motor::move_absolute(float absolute_mm) {
+        if(!(m_home_lim_hit && absolute_mm < get_current_posn())) {
+            m_motor.moveTo(_mm_to_steps(absolute_mm));
+            m_home_lim_hit = false;
         }
     }
 
-    void Motor::move_relative(long relative) {
-        if(!((m_lim_neg && relative < 0) || (m_lim_pos && relative > 0))) {
-            m_motor.move(relative);
-            m_lim_neg = false;
-            m_lim_pos = false;
-        }
-        m_motor.move(relative);
-    }
-
-    void Motor::move_at_velocity() {
-        if(!((m_lim_pos && get_speed() > 0) || (m_lim_neg && get_speed() < 0))) {
-            m_motor.runSpeed();
+    void Motor::move_relative(float relative_mm) {
+        if(!(m_home_lim_hit && relative_mm > 0)) {
+            m_motor.move(_mm_to_steps(relative_mm));
+            m_home_lim_hit = false;
         }
     }
 
     void Motor::update() {
-        if((!m_lim_pos && get_lim_pos()) || (!m_lim_neg && get_lim_neg())) {
+        if(!m_home_lim_hit && get_home_lim()) {
             m_motor.setCurrentPosition(m_motor.currentPosition());
         } 
         if(is_moving() && !m_enabled) {
@@ -90,8 +88,8 @@ namespace mtr {
     }
 
 
-    void Motor::set_current_posn(long position) {
-        m_motor.setCurrentPosition(position);
+    void Motor::set_current_posn(long position_mm) {
+        m_motor.setCurrentPosition(_mm_to_steps(position_mm));
     }
     void Motor::set_max_speed(float speed) {
         m_motor.setMaxSpeed(speed);
@@ -103,8 +101,7 @@ namespace mtr {
         m_motor.setAcceleration(acceleration);
     }
     void Motor::set_limit_debounce_interval(unsigned long ms) {
-        m_lim_n.setDebounceTime(ms);
-        m_lim_p.setDebounceTime(ms);
+        m_home_lim.setDebounceTime(ms);
     }
     void Motor::enable_motor(bool enable) {
         if(m_enabled != enable) {
@@ -115,10 +112,9 @@ namespace mtr {
         }
     }
 
-
-
+    
     long Motor::get_current_posn() {
-        return m_motor.currentPosition();
+        return _steps_to_mm(m_motor.currentPosition());
     }
     float Motor::get_speed() {
         return m_motor.speed();
@@ -129,20 +125,23 @@ namespace mtr {
     float Motor::get_acceleration() {
         return m_motor.acceleration();
     }
-    bool Motor::get_lim_neg() {
-        m_lim_n.loop();
-        m_lim_neg = m_lim_n.isPressed();
-        return m_lim_neg;
-    }
-    bool Motor::get_lim_pos() {
-        m_lim_p.loop();
-        m_lim_pos = m_lim_p.isPressed();
-        return m_lim_pos;
+    bool Motor::get_home_lim() {
+        m_home_lim.loop();
+        m_home_lim_hit = m_home_lim.isPressed();
+        return m_home_lim_hit;
     }
     long Motor::get_dist_to_go() {
-        return m_motor.distanceToGo();
+        return _steps_to_mm(m_motor.distanceToGo());
     }
     long Motor::get_target_posn() {
-        return m_motor.targetPosition();
+        return _steps_to_mm(m_motor.targetPosition());
+    }
+
+    long Motor::_mm_to_steps(float mm) {
+        return long(mm * (m_steps_per_rev * m_micro_res)/m_lead_mm);
+    }
+
+    float Motor::_steps_to_mm(long steps) {
+        return float(steps * 1.0 * m_lead_mm/(m_steps_per_rev * m_micro_res * 1.0));
     }
 }

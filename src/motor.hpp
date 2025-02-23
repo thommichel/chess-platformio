@@ -6,24 +6,34 @@
 namespace mtr {
     class Motor {
         private:
-            bool m_homing;
-            bool m_enabled;
             AccelStepper m_motor;
             DRV8434S m_driver;
-            ezButton m_lim_n;
-            ezButton m_lim_p;
-            bool m_lim_neg;
-            bool m_lim_pos;
             u_int8_t m_select;
             int m_dir;
 
+            ezButton m_home_lim;
+            bool m_home_lim_hit;
+            bool m_homing;
+            bool m_enabled;
+            uint16_t m_micro_res;
+
+            uint16_t m_steps_per_rev;
+            uint8_t m_lead_mm;
+            long _mm_to_steps(float mm);
+            float _steps_to_mm(long steps);
         public:
             Motor();
-            Motor(uint8_t select, uint8_t lim_neg, uint8_t lim_pos);
+            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm);
 
-            void move_absolute(long absolute);
-            void move_relative(long relative);
-            void move_at_velocity();
+            void setup_driver(void (*forward_func)(), void (*backwards_func)());
+            void setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA);
+            void set_current_mA(uint16_t current);
+            void set_micro_step(uint8_t resolution);
+            void _spi_step_forward();
+            void _spi_step_backwards();
+
+            void move_absolute(float absolute_mm);
+            void move_relative(float relative_mm);
             void update();
             void stop();
             bool is_moving();
@@ -39,15 +49,9 @@ namespace mtr {
             float get_speed();
             float get_max_speed();
             float get_acceleration();
-            bool get_lim_neg();
-            bool get_lim_pos();
+            bool get_home_lim();
             long get_dist_to_go();
             long get_target_posn();
-
-            void setup_driver(void (*forward_func)(), void (*backwards_func)());
-            void setup_driver(void (*forward_func)(), void (*backwards_func)(), int starting_mA);
-            void _spi_step_forward();
-            void _spi_step_backwards();
     };
 }
 #endif
