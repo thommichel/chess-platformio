@@ -1,5 +1,7 @@
 #include "motor.hpp"
 
+#ifndef GANTRY_HPP
+#define GANTRY_HPP
 namespace gnt {
     class Gantry {
         public:
@@ -29,3 +31,4 @@ namespace gnt {
             bool m_homing;
     };
 }
+#endif
