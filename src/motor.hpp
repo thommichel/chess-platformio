@@ -32,16 +32,18 @@ namespace mtr {
             Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current);
 
             void setup_driver(void (*forward_func)(), void (*backwards_func)());
-            void set_current_mA(uint16_t current);
+            void set_current_mA(int current);
             void set_micro_step(uint8_t resolution);
             void _spi_step_forward();
             void _spi_step_backwards();
 
             void move_absolute(float absolute_mm);
             void move_relative(float relative_mm);
+            void home();
             void update();
             void stop();
             bool is_moving();
+            bool is_homing();
 
             void set_current_posn(long position);
             void set_max_speed(float speed);

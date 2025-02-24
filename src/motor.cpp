@@ -26,7 +26,7 @@ namespace mtr {
         m_motor.setAcceleration(m_default_acc);
     }
     
-    void Motor::set_current_mA(uint16_t current) {
+    void Motor::set_current_mA(int current) {
         m_driver.setCurrentMilliamps(current);
     }
 
@@ -64,6 +64,31 @@ namespace mtr {
         }
     }
 
+    void Motor::home() {
+        m_homing = true;
+        set_max_speed(m_slow_speed);
+
+        move_relative(-1000);
+
+        while(is_moving()) {}
+
+        move_relative(5);
+
+        while(is_moving()) {}
+
+        set_max_speed(m_fine_speed);
+
+        move_relative(-1000);
+
+        while(is_moving()) {}
+
+        set_max_speed(m_fine_speed);
+
+        set_current_posn(0);
+
+        m_homing = false;
+    }
+
     void Motor::update() {
         if(!m_home_lim_hit && get_home_lim()) {
             m_motor.setCurrentPosition(m_motor.currentPosition());
@@ -85,6 +110,10 @@ namespace mtr {
 
     bool Motor::is_moving() {
         return m_motor.isRunning();
+    }
+
+    bool Motor::is_homing() {
+        return m_homing;
     }
 
 
