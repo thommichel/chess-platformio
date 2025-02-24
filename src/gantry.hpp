@@ -19,9 +19,9 @@ namespace gnt {
             bool is_moving();
             bool is_homing();
 
-            mtr::Motor get_x_axis();
-            mtr::Motor get_y_axis();
-            mtr::Motor get_z_axis();
+            mtr::Motor& get_x_axis();
+            mtr::Motor& get_y_axis();
+            mtr::Motor& get_z_axis();
 
         private:
             mtr::Motor m_x_axis;

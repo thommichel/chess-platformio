@@ -78,15 +78,15 @@ namespace gnt {
         return m_homing;
     }
 
-    mtr::Motor Gantry::get_x_axis() {
+    mtr::Motor& Gantry::get_x_axis() {
         return m_x_axis; 
     }
             
-    mtr::Motor Gantry::get_y_axis() {
+    mtr::Motor& Gantry::get_y_axis() {
         return m_y_axis;
     }
     
-    mtr::Motor Gantry::get_z_axis() {
+    mtr::Motor& Gantry::get_z_axis() {
         return m_z_axis;
     }
 }

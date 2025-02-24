@@ -5,7 +5,7 @@
 #include <SPI.h>
 
 // Serial constants
-#define BAUD_RATE 9600
+#define BAUD_RATE 115200
 
 // Folger Tech Nema 17 constants 
 #define FOLGER_TECH_ACCEL 750
