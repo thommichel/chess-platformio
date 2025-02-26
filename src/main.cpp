@@ -51,19 +51,19 @@ void loop() {
 }
 
 void x_axis_f() {
-  x_axis._spi_step_forward();
+  three_dof.get_x_axis()._spi_step_forward();
 }
 void x_axis_b() {
-  x_axis._spi_step_backwards();
+  three_dof.get_x_axis()._spi_step_backwards();
 }
 void y_axis_f() {
-  y_axis._spi_step_forward();
+  three_dof.get_y_axis()._spi_step_forward();
 }
 void y_axis_b() {
-  y_axis._spi_step_backwards();
+  three_dof.get_y_axis()._spi_step_backwards();
 }void z_axis_f() {
-  z_axis._spi_step_forward();
+  three_dof.get_z_axis()._spi_step_forward();
 }
 void z_axis_b() {
-  z_axis._spi_step_backwards();
+  three_dof.get_z_axis()._spi_step_backwards();
 }

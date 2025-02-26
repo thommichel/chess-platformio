@@ -4,7 +4,7 @@
 
 namespace mtr {
     Motor::Motor(): m_homing(false), m_enabled(false), m_home_lim(NOT_A_PIN), m_home_lim_hit(false), m_dir(-1)  {}
-    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_motor_current(motor_current), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
+    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(steps_per_rev), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_motor_current(motor_current), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_micro_res(1)
     {
         m_slow_speed = m_default_speed/3;
         m_fine_speed = m_default_speed/5;
@@ -58,7 +58,7 @@ namespace mtr {
     }
 
     void Motor::move_relative(float relative_mm) {
-        if(!(m_home_lim_hit && relative_mm > 0)) {
+        if(!(m_home_lim_hit && relative_mm < 0)) {
             m_motor.move(_mm_to_steps(relative_mm));
             m_home_lim_hit = false;
         }
@@ -101,7 +101,6 @@ namespace mtr {
         } else if(!is_moving() && m_enabled) {
             enable_motor(false);
         }
-        m_motor.run();
     }
 
     void Motor::stop() {
