@@ -20,7 +20,6 @@ namespace mtr {
         set_micro_step(m_micro_res);
         m_driver.enableSPIDirection();
         m_driver.enableSPIStep();
-        m_driver.enableDriver();
         m_motor = AccelStepper(forward_func, backwards_func);
         m_motor.setMaxSpeed(m_default_speed);
         m_motor.setAcceleration(m_default_acc);
@@ -95,12 +94,10 @@ namespace mtr {
         } 
         if(is_moving() && !m_enabled) {
             enable_motor(true);
-            m_motor.run();
-        } else if(is_moving()) {
-            m_motor.run();
         } else if(!is_moving() && m_enabled) {
             enable_motor(false);
         }
+        m_motor.run();
     }
 
     void Motor::stop() {
@@ -143,9 +140,11 @@ namespace mtr {
     void Motor::enable_motor(bool enable) {
         if(m_enabled != enable) {
             m_enabled = enable;
-        }
-        else {
-            m_enabled = enable;
+            if (m_enabled) {
+                m_driver.enableDriver();
+            } else {
+                m_driver.disableDriver();
+            }
         }
     }
 
@@ -173,7 +172,7 @@ namespace mtr {
     }
     bool Motor::get_home_lim() {
         m_home_lim.loop();
-        m_home_lim_hit = m_home_lim.isPressed();
+        m_home_lim_hit = m_home_lim.isReleased();
         return m_home_lim_hit;
     }
     long Motor::get_dist_to_go() {
