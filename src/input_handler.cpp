@@ -40,8 +40,6 @@ namespace cmd {
             case CMD_MOVE_RELATIVE:
                 float distance;
                 bytes_to_float(&distance, cmd_buffer, 1);
-                Serial.print("FLOAT RECEIVED: ");
-                Serial.println(distance);
                 if(cmd_buffer[1] == X_AXIS) {
                     gantry.get_x_axis().move_relative(distance);
                 } else if(cmd_buffer[1] == Y_AXIS) {
@@ -51,7 +49,7 @@ namespace cmd {
                 } else {
                     Serial.write("Invalid type\n");
                 }
-                Serial.write("OK");
+                Serial.write("OK\n");
                 break;
             default:
                 Serial.write("Invalid command\n");
