@@ -89,7 +89,7 @@ namespace mtr {
     }
 
     void Motor::update() {
-        if(!m_home_lim_hit && get_home_lim()) {
+        if(get_home_lim()) {
             m_motor.setCurrentPosition(m_motor.currentPosition());
         } 
         if(is_moving() && !m_enabled) {
