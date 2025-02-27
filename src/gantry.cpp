@@ -19,9 +19,9 @@ namespace gnt {
 
         while(is_moving()) {}
 
-        m_x_axis.move_relative(5);
-        m_y_axis.move_relative(5);
-        m_z_axis.move_relative(5);
+        m_x_axis.move_relative(15);
+        m_y_axis.move_relative(15);
+        m_z_axis.move_relative(15);
 
         while(is_moving()) {}
 

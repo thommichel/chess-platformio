@@ -77,7 +77,7 @@ namespace mtr {
 
         while(is_moving()) {}
 
-        move_relative(5);
+        move_relative(15);
 
         while(is_moving()) {}
 
