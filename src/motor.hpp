@@ -29,7 +29,7 @@ namespace mtr {
             float _steps_to_mm(long steps);
         public:
             Motor();
-            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current);
+            Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current, uint8_t microstep_res);
 
             void setup_driver(void (*forward_func)(), void (*backwards_func)());
             void set_current_mA(int current);
