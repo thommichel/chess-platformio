@@ -28,10 +28,6 @@ namespace cmd {
             }
             cmd_buffer[i] = Serial.read();
         }
-        if(Serial.read() != 0x0A) {
-            Serial.write("Incomplete command\n");
-            return CMD_ERROR;
-        }
         return 0;
     }
 

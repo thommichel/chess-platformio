@@ -16,10 +16,11 @@ def identify_esp():
 def send_command(device: Serial, cmd:int, type:int, p1:float, p2:float):
     cmd_b = cmd.to_bytes(1, byteorder='big')
     type_b = type.to_bytes(1, byteorder='big')
-    p1_b = struct.pack("f", p1)
-    p2_b = struct.pack("f", p2)
-    device.write(bytearray(cmd_b + type_b + p1_b + p2_b + b'\x0A'))
-
+    p1_b = struct.pack(">f", p1)
+    p2_b = struct.pack(">f", p2)
+    arrr = bytearray(cmd_b + type_b + p1_b + p2_b)
+    print(rf'{arrr}')
+    device.write(arrr)
 
 with Serial(identify_esp(), 115200) as esp:
     try:
@@ -38,7 +39,7 @@ with Serial(identify_esp(), 115200) as esp:
                 if esp.in_waiting > 0:
                     resp = esp.readline()
                     print("REPOSNSE: ", end = '')
-                    ser_print(resp.decode())
+                    print(resp, end='')
                 else:
                     print("error: did not receive a response, but should've")
 
