@@ -1,10 +1,8 @@
-#include <AccelStepper.h>
 #include "motor.hpp"
-#include <ezButton.h>
 
 namespace mtr {
     Motor::Motor(): m_homing(false), m_enabled(false), m_home_lim(NOT_A_PIN), m_home_lim_hit(false), m_dir(-1)  {}
-    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current, uint8_t microstep_res): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(steps_per_rev), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_motor_current(motor_current), m_micro_res(microstep_res), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false)
+    Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current, uint8_t microstep_res): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(steps_per_rev), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_motor_current(motor_current), m_micro_res(microstep_res), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_motor(0,0,0)
     {
         m_default_speed *= m_micro_res;
         m_slow_speed = m_default_speed/3;

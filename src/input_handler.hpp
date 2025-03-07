@@ -1,6 +1,7 @@
-#include "gantry.hpp"
 #ifndef INPUT_HANDLER_HPP
 #define INPUT_HANDLER_HPP
+
+#include "gantry.hpp"
 namespace cmd {
     // Command settings
     const int CMD_TIMEOUT = 3000;

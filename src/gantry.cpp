@@ -1,8 +1,4 @@
 #include "gantry.hpp"
-#include "motor.hpp"
-
-#include <Arduino.h>
-
 namespace gnt {
     Gantry::Gantry(): m_x_axis(mtr::Motor()), m_y_axis(mtr::Motor()), m_z_axis(mtr::Motor()), m_homing(false) {}
     Gantry::Gantry(mtr::Motor& x_axis, mtr::Motor& y_axis, mtr::Motor& z_axis, uint8_t magnet_pin): m_x_axis(x_axis), m_y_axis(y_axis), m_z_axis(z_axis), m_magnet_pin(magnet_pin), m_homing(false) {}

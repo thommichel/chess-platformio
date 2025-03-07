@@ -1,8 +1,8 @@
+#include <Arduino.h>
+#include <SPI.h>
 #include "motor.hpp"
 #include "gantry.hpp"
 #include "input_handler.hpp"
-#include <Arduino.h>
-#include <SPI.h>
 
 // Serial constants
 #define BAUD_RATE 115200

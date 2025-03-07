@@ -1,8 +1,11 @@
+#ifndef MOTOR_HPP
+#define MOTOR_HPP
+
 #include <AccelStepper.h>
 #include <ezButton.h>
 #include <DRV8434S.h>
-#ifndef MOTOR_HPP
-#define MOTOR_HPP
+#include <Arduino.h>
+
 namespace mtr {
     class Motor {
         private:
