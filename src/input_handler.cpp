@@ -35,7 +35,7 @@ namespace cmd {
         switch(cmd_buffer[0]) {
             case CMD_MOVE_RELATIVE:
                 float distance;
-                bytes_to_float(&distance, cmd_buffer, 1);
+                bytes_to_float(&distance, cmd_buffer, 2);
                 if(cmd_buffer[1] == X_AXIS) {
                     gantry.get_x_axis().move_relative(distance);
                 } else if(cmd_buffer[1] == Y_AXIS) {
@@ -47,6 +47,16 @@ namespace cmd {
                 }
                 Serial.write("OK\n");
                 break;
+            case CMD_HOME:
+                if(cmd_buffer[1] == X_AXIS) {
+                    gantry.get_x_axis().home();
+                } else if(cmd_buffer[1] == Y_AXIS) {
+                    gantry.get_y_axis().home();
+                } else if(cmd_buffer[1] == Z_AXIS) {
+                    gantry.get_z_axis().home();
+                } else {
+                    Serial.write("Invalid type\n");
+                }
             default:
                 Serial.write("Invalid command\n");
         }

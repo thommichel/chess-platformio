@@ -4,10 +4,8 @@ namespace mtr {
     Motor::Motor(): m_homing(false), m_enabled(false), m_home_lim(NOT_A_PIN), m_home_lim_hit(false), m_dir(-1)  {}
     Motor::Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current, uint8_t microstep_res): m_select(select), m_home_lim(limit_pin), m_steps_per_rev(steps_per_rev), m_lead_mm(lead_mm), m_default_acc(default_acceleration), m_default_speed(default_speed), m_motor_current(motor_current), m_micro_res(microstep_res), m_dir(-1), m_homing(false), m_enabled(false), m_home_lim_hit(false), m_motor(0,0,0)
     {
-        m_default_speed *= m_micro_res;
         m_slow_speed = m_default_speed/3;
         m_fine_speed = m_default_speed/5;
-        m_default_acc *= m_micro_res;
         m_home_lim.setDebounceTime(10);
         m_home_lim_hit = m_home_lim.getState();
     }
@@ -32,8 +30,6 @@ namespace mtr {
     void Motor::set_micro_step(uint8_t resolution) {
         m_driver.setStepMode(resolution);
         m_micro_res = resolution;
-        m_default_speed *= m_micro_res;
-        m_default_acc *= m_micro_res;
         m_slow_speed = m_default_speed/3;
         m_fine_speed = m_default_speed/5;
     }
@@ -73,19 +69,25 @@ namespace mtr {
 
         move_relative(-1000);
 
-        while(is_moving()) {}
+        while(is_moving()) {
+            update();
+        }
 
         move_relative(15);
 
-        while(is_moving()) {}
+        while(is_moving()) {
+            update();
+        }
 
         set_max_speed(m_fine_speed);
 
         move_relative(-1000);
 
-        while(is_moving()) {}
+        while(is_moving()) {
+            update();
+        }
 
-        set_max_speed(m_fine_speed);
+        set_max_speed(m_default_speed);
 
         set_current_posn(0);
 

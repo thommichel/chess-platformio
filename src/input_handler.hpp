@@ -16,6 +16,7 @@ namespace cmd {
 
     // Commands
     const uint8_t CMD_MOVE_RELATIVE = 0;
+    const uint8_t CMD_HOME = 1;
     /*
     Parse and execute the user's given command.
     */
@@ -38,4 +39,5 @@ namespace cmd {
     void bytes_to_int(int *l, unsigned char *cmd_buffer, int offset);
     void int_to_bytes(int *l, unsigned char *cmd_buffer, int offset);
 }
+
 #endif
