@@ -45,8 +45,10 @@ namespace gnt {
         m_x_axis.move_absolute(x_mm);
         m_z_axis.move_absolute(z_mm);
     }
-    void Gantry::move_y_absolute(float y_mm) {
+    void Gantry::move_xyz_absolute(float x_mm, float y_mm, float z_mm) {
+        m_x_axis.move_absolute(x_mm);
         m_y_axis.move_absolute(y_mm);
+        m_z_axis.move_absolute(z_mm);
     }
     void Gantry::stop() {
         m_x_axis.stop();

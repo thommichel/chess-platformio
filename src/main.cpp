@@ -33,6 +33,7 @@ mtr::Motor y_axis(Y_SPI_SEL, Y_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_T
 mtr::Motor z_axis(Z_SPI_SEL, Z_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED_Z, FOLGER_TECH_MILLIAMPS, FOLGER_TECH_MICRO_RES);
 
 gnt::Gantry three_dof(x_axis, y_axis, z_axis, ELEC_MAG);
+cmd::InputHandler input_handler(three_dof);
 
 void x_axis_f();
 void x_axis_b();
@@ -50,7 +51,7 @@ void setup() {
 }
 
 void loop() {
-  cmd::handle_user_input(three_dof);
+  input_handler.handle_user_input();
   three_dof.update();
 }
 
