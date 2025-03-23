@@ -27,6 +27,7 @@ namespace cmd {
                 RET_UNRECOGNIZED = 2,
                 RET_INVALID_PARAM = 3,
                 RET_ERROR = 4,
+                RET_ENDLINE = 0x0A,
 
                 // Command Types
                 GANTRY = 0,

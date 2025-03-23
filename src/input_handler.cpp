@@ -45,13 +45,13 @@ namespace cmd {
 
     void InputHandler::send_return_value(uint8_t ret) {
         Serial.write(ret);
-        Serial.write("\n");
+        Serial.write(RET_ENDLINE);
     }
 
     void InputHandler::send_return_value(uint8_t ret, uint8_t val) {
         Serial.write(ret);
         Serial.write(val);
-        Serial.write("\n");
+        Serial.write(RET_ENDLINE);
     }
 
     void InputHandler::send_return_values(uint8_t ret, unsigned char *buffer) {
@@ -60,7 +60,7 @@ namespace cmd {
         for(int i = 0; i < size; ++i) {
             Serial.write(buffer[i]);
         }
-        Serial.write("\n");
+        Serial.write(RET_ENDLINE);
     }
 
     void InputHandler::handle_command(unsigned char *cmd_buffer) {
