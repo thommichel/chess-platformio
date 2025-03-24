@@ -59,7 +59,7 @@ namespace cmd {
                 CMD_SET_MAX_SPEED = 35,
                 CMD_SET_DEFAULT_SPEED = 36,
                 CMD_SET_SLOW_SPEED = 37,
-                CMD_SEST_FINE_SPEED = 38,
+                CMD_SET_FINE_SPEED = 38,
                 CMD_SET_ACCEL = 39,
                 CMD_ENABLE_MAG = 40,
                 CUTTOFF_3_PARAM = 64,
@@ -113,7 +113,7 @@ namespace cmd {
             void cmd_set_max_speed(unsigned char *cmd_buffer);
             void cmd_set_default_speed(unsigned char *cmd_buffer);
             void cmd_set_slow_speed(unsigned char *cmd_buffer);
-            void cmd_sest_fine_speed(unsigned char *cmd_buffer);
+            void cmd_set_fine_speed(unsigned char *cmd_buffer);
             void cmd_set_accel(unsigned char *cmd_buffer);
             void cmd_enable_mag(unsigned char *cmd_buffer);
             void cmd_move_xz(unsigned char *cmd_buffer);

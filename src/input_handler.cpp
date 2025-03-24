@@ -125,8 +125,8 @@ namespace cmd {
             case CMD_SET_SLOW_SPEED:
                 cmd_set_slow_speed(cmd_buffer);
                 break;
-            case CMD_SEST_FINE_SPEED:
-                cmd_sest_fine_speed(cmd_buffer);
+            case CMD_SET_FINE_SPEED:
+                cmd_set_fine_speed(cmd_buffer);
                 break;
             case CMD_SET_ACCEL:
                 cmd_set_accel(cmd_buffer);
@@ -514,7 +514,7 @@ namespace cmd {
         
     }
     
-    void InputHandler::cmd_sest_fine_speed(unsigned char *cmd_buffer) {
+    void InputHandler::cmd_set_fine_speed(unsigned char *cmd_buffer) {
         float speed;
         bytes_to_float(&speed, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
