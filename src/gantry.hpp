@@ -29,7 +29,6 @@ namespace gnt {
             mtr::Motor m_y_axis;
             mtr::Motor m_z_axis;
             uint8_t m_magnet_pin;
-            bool m_homing;
     };
 }
 #endif

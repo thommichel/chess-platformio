@@ -211,12 +211,14 @@ namespace cmd {
             send_return_value(RET_INVALID_PARAM);
             return;
         }
-        unsigned char ret_val[1];
+        float ret_val;
         if (val)
-            ret_val[0] = 1;
+            ret_val = 1;
         else
-            ret_val[0] = 1;
-        send_return_values(RET_OK, ret_val);
+            ret_val = 0;
+        unsigned char float_buffer[sizeof(float)];
+        float_to_bytes(&ret_val, float_buffer, 0);
+        send_return_values(RET_OK, float_buffer);
     }
     
     void InputHandler::cmd_is_moving(unsigned char *cmd_buffer) {
@@ -233,12 +235,14 @@ namespace cmd {
             send_return_value(RET_INVALID_PARAM);
             return;
         }
-        unsigned char ret_val[1];
+        float ret_val;
         if (val)
-            ret_val[0] = 1;
+            ret_val = 1;
         else
-            ret_val[0] = 1;
-        send_return_values(RET_OK, ret_val);
+            ret_val = 0;
+        unsigned char float_buffer[sizeof(float)];
+        float_to_bytes(&ret_val, float_buffer, 0);
+        send_return_values(RET_OK, float_buffer);
     }
     
     void InputHandler::cmd_get_posn(unsigned char *cmd_buffer) {
@@ -441,9 +445,10 @@ namespace cmd {
         } else if(cmd_buffer[1] == Z_AXIS) {
             m_gantry.get_z_axis().move_relative(distance);
         } else {
-            Serial.write("Invalid type\n");
+            send_return_value(RET_INVALID_PARAM);
+            return;
         }
-        Serial.write("OK\n");
+        send_return_value(RET_OK);
     }
     
     void InputHandler::cmd_set_posn(unsigned char *cmd_buffer) {

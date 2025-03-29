@@ -66,7 +66,8 @@ void y_axis_f() {
 }
 void y_axis_b() {
   three_dof.get_y_axis()._spi_step_backwards();
-}void z_axis_f() {
+}
+void z_axis_f() {
   three_dof.get_z_axis()._spi_step_forward();
 }
 void z_axis_b() {
