@@ -11,7 +11,7 @@ namespace cmd {
     class InputHandler {
         public:
             InputHandler();
-            InputHandler(gnt::Gantry& gantry);
+            InputHandler(gnt::Gantry* gantry);
     
             /*
             Parse and execute the user's given command.
@@ -19,7 +19,7 @@ namespace cmd {
             void handle_user_input();
         
         private:
-            gnt::Gantry m_gantry;
+            gnt::Gantry *m_gantry;
             enum : uint8_t {
                 // Command error codes
                 RET_OK = 0,

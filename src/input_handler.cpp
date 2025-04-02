@@ -5,7 +5,9 @@
 namespace cmd {
     
     InputHandler::InputHandler() {}
-    InputHandler::InputHandler(gnt::Gantry& gantry): m_gantry(gantry) {}
+    InputHandler::InputHandler(gnt::Gantry* gantry) {
+        m_gantry = gantry;
+    }
     void InputHandler::handle_user_input() {
         if(Serial.available()) {
             unsigned char buffer[MAX_CMD];
@@ -166,13 +168,13 @@ namespace cmd {
 
     void InputHandler::cmd_home(unsigned char *cmd_buffer) {
         if(cmd_buffer[1] == GANTRY) {
-            m_gantry.home();
+            m_gantry->home();
         } else if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().home();
+            m_gantry->get_x_axis()->home();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().home();
+            m_gantry->get_y_axis()->home();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().home();
+            m_gantry->get_z_axis()->home();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -182,13 +184,13 @@ namespace cmd {
     
     void InputHandler::cmd_stop(unsigned char *cmd_buffer) {
         if(cmd_buffer[1] == GANTRY) {
-            m_gantry.stop();
+            m_gantry->stop();
         } else if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().stop();
+            m_gantry->get_x_axis()->stop();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().stop();
+            m_gantry->get_y_axis()->stop();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().stop();
+            m_gantry->get_z_axis()->stop();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -200,13 +202,13 @@ namespace cmd {
     void InputHandler::cmd_is_homing(unsigned char *cmd_buffer) {
         bool val;
         if(cmd_buffer[1] == GANTRY) {
-            val = m_gantry.is_homing();
+            val = m_gantry->is_homing();
         } else if(cmd_buffer[1] == X_AXIS) {
-            val = m_gantry.get_x_axis().is_homing();
+            val = m_gantry->get_x_axis()->is_homing();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            val = m_gantry.get_y_axis().is_homing();
+            val = m_gantry->get_y_axis()->is_homing();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            val = m_gantry.get_z_axis().is_homing();
+            val = m_gantry->get_z_axis()->is_homing();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -224,13 +226,13 @@ namespace cmd {
     void InputHandler::cmd_is_moving(unsigned char *cmd_buffer) {
         bool val;
         if(cmd_buffer[1] == GANTRY) {
-            val = m_gantry.is_moving();
+            val = m_gantry->is_moving();
         } else if(cmd_buffer[1] == X_AXIS) {
-            val = m_gantry.get_x_axis().is_moving();
+            val = m_gantry->get_x_axis()->is_moving();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            val = m_gantry.get_y_axis().is_moving();
+            val = m_gantry->get_y_axis()->is_moving();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            val = m_gantry.get_z_axis().is_moving();
+            val = m_gantry->get_z_axis()->is_moving();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -248,11 +250,11 @@ namespace cmd {
     void InputHandler::cmd_get_posn(unsigned char *cmd_buffer) {
         float posn; 
         if(cmd_buffer[1] == X_AXIS) {
-            posn = (float) m_gantry.get_x_axis().get_current_posn();
+            posn = (float) m_gantry->get_x_axis()->get_current_posn();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            posn = (float) m_gantry.get_y_axis().get_current_posn();
+            posn = (float) m_gantry->get_y_axis()->get_current_posn();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            posn = (float) m_gantry.get_z_axis().get_current_posn();
+            posn = (float) m_gantry->get_z_axis()->get_current_posn();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -265,11 +267,11 @@ namespace cmd {
     void InputHandler::cmd_get_speed(unsigned char *cmd_buffer) {
         float speed;
         if(cmd_buffer[1] == X_AXIS) {
-            speed = m_gantry.get_x_axis().get_speed();
+            speed = m_gantry->get_x_axis()->get_speed();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            speed = m_gantry.get_y_axis().get_speed();
+            speed = m_gantry->get_y_axis()->get_speed();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            speed = m_gantry.get_z_axis().get_speed();
+            speed = m_gantry->get_z_axis()->get_speed();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -282,11 +284,11 @@ namespace cmd {
     void InputHandler::cmd_get_default_speed(unsigned char *cmd_buffer) {
         float speed;
         if(cmd_buffer[1] == X_AXIS) {
-            speed = m_gantry.get_x_axis().get_default_speed();
+            speed = m_gantry->get_x_axis()->get_default_speed();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            speed = m_gantry.get_y_axis().get_default_speed();
+            speed = m_gantry->get_y_axis()->get_default_speed();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            speed = m_gantry.get_z_axis().get_default_speed();
+            speed = m_gantry->get_z_axis()->get_default_speed();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -299,11 +301,11 @@ namespace cmd {
     void InputHandler::cmd_get_slow_speed(unsigned char *cmd_buffer) {
         float speed;
         if(cmd_buffer[1] == X_AXIS) {
-            speed = m_gantry.get_x_axis().get_slow_speed();
+            speed = m_gantry->get_x_axis()->get_slow_speed();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            speed = m_gantry.get_y_axis().get_slow_speed();
+            speed = m_gantry->get_y_axis()->get_slow_speed();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            speed = m_gantry.get_z_axis().get_slow_speed();
+            speed = m_gantry->get_z_axis()->get_slow_speed();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -316,11 +318,11 @@ namespace cmd {
     void InputHandler::cmd_get_fine_speed(unsigned char *cmd_buffer) {
         float speed;
         if(cmd_buffer[1] == X_AXIS) {
-            speed = m_gantry.get_x_axis().get_fine_speed();
+            speed = m_gantry->get_x_axis()->get_fine_speed();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            speed = m_gantry.get_y_axis().get_fine_speed();
+            speed = m_gantry->get_y_axis()->get_fine_speed();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            speed = m_gantry.get_z_axis().get_fine_speed();
+            speed = m_gantry->get_z_axis()->get_fine_speed();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -333,11 +335,11 @@ namespace cmd {
     void InputHandler::cmd_get_max_speed(unsigned char *cmd_buffer) {
         float speed;
         if(cmd_buffer[1] == X_AXIS) {
-            speed = m_gantry.get_x_axis().get_max_speed();
+            speed = m_gantry->get_x_axis()->get_max_speed();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            speed = m_gantry.get_y_axis().get_max_speed();
+            speed = m_gantry->get_y_axis()->get_max_speed();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            speed = m_gantry.get_z_axis().get_max_speed();
+            speed = m_gantry->get_z_axis()->get_max_speed();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -350,11 +352,11 @@ namespace cmd {
     void InputHandler::cmd_get_accel(unsigned char *cmd_buffer) {
         float accel;
         if(cmd_buffer[1] == X_AXIS) {
-            accel = m_gantry.get_x_axis().get_acceleration();
+            accel = m_gantry->get_x_axis()->get_acceleration();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            accel = m_gantry.get_y_axis().get_acceleration();
+            accel = m_gantry->get_y_axis()->get_acceleration();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            accel = m_gantry.get_z_axis().get_acceleration();
+            accel = m_gantry->get_z_axis()->get_acceleration();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -367,11 +369,11 @@ namespace cmd {
     void InputHandler::cmd_get_limit(unsigned char *cmd_buffer) {
         bool val;
         if(cmd_buffer[1] == X_AXIS) {
-            val = m_gantry.get_x_axis().get_home_lim();
+            val = m_gantry->get_x_axis()->get_home_lim();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            val = m_gantry.get_y_axis().get_home_lim();
+            val = m_gantry->get_y_axis()->get_home_lim();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            val = m_gantry.get_z_axis().get_home_lim();
+            val = m_gantry->get_z_axis()->get_home_lim();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -387,11 +389,11 @@ namespace cmd {
     void InputHandler::cmd_get_dist_to_go(unsigned char *cmd_buffer) {
         float dist; 
         if(cmd_buffer[1] == X_AXIS) {
-            dist = (float) m_gantry.get_x_axis().get_dist_to_go();
+            dist = (float) m_gantry->get_x_axis()->get_dist_to_go();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            dist = (float) m_gantry.get_y_axis().get_dist_to_go();
+            dist = (float) m_gantry->get_y_axis()->get_dist_to_go();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            dist = (float) m_gantry.get_z_axis().get_dist_to_go();
+            dist = (float) m_gantry->get_z_axis()->get_dist_to_go();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -404,11 +406,11 @@ namespace cmd {
     void InputHandler::cmd_get_target_posn(unsigned char *cmd_buffer) {
         float posn; 
         if(cmd_buffer[1] == X_AXIS) {
-            posn = (float) m_gantry.get_x_axis().get_target_posn();
+            posn = (float) m_gantry->get_x_axis()->get_target_posn();
         } else if(cmd_buffer[1] == Y_AXIS) {
-            posn = (float) m_gantry.get_y_axis().get_target_posn();
+            posn = (float) m_gantry->get_y_axis()->get_target_posn();
         } else if(cmd_buffer[1] == Z_AXIS) {
-            posn = (float) m_gantry.get_z_axis().get_target_posn();
+            posn = (float) m_gantry->get_z_axis()->get_target_posn();
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -422,11 +424,11 @@ namespace cmd {
         float posn;
         bytes_to_float(&posn, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().move_absolute(posn);
+            m_gantry->get_x_axis()->move_absolute(posn);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().move_absolute(posn);
+            m_gantry->get_y_axis()->move_absolute(posn);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().move_absolute(posn);
+            m_gantry->get_z_axis()->move_absolute(posn);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -439,11 +441,11 @@ namespace cmd {
         float distance;
         bytes_to_float(&distance, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().move_relative(distance);
+            m_gantry->get_x_axis()->move_relative(distance);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().move_relative(distance);
+            m_gantry->get_y_axis()->move_relative(distance);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().move_relative(distance);
+            m_gantry->get_z_axis()->move_relative(distance);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -455,11 +457,11 @@ namespace cmd {
         float posn;
         bytes_to_float(&posn, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().set_current_posn((long)posn);
+            m_gantry->get_x_axis()->set_current_posn((long)posn);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().move_absolute((long)posn);
+            m_gantry->get_y_axis()->move_absolute((long)posn);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().move_absolute((long)posn);
+            m_gantry->get_z_axis()->move_absolute((long)posn);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -472,11 +474,11 @@ namespace cmd {
         float speed;
         bytes_to_float(&speed, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().set_max_speed(speed);
+            m_gantry->get_x_axis()->set_max_speed(speed);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().set_max_speed(speed);
+            m_gantry->get_y_axis()->set_max_speed(speed);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().set_max_speed(speed);
+            m_gantry->get_z_axis()->set_max_speed(speed);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -489,11 +491,11 @@ namespace cmd {
         float speed;
         bytes_to_float(&speed, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().set_default_speed(speed);
+            m_gantry->get_x_axis()->set_default_speed(speed);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().set_default_speed(speed);
+            m_gantry->get_y_axis()->set_default_speed(speed);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().set_default_speed(speed);
+            m_gantry->get_z_axis()->set_default_speed(speed);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -506,11 +508,11 @@ namespace cmd {
         float speed;
         bytes_to_float(&speed, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().set_slow_speed(speed);
+            m_gantry->get_x_axis()->set_slow_speed(speed);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().set_slow_speed(speed);
+            m_gantry->get_y_axis()->set_slow_speed(speed);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().set_slow_speed(speed);
+            m_gantry->get_z_axis()->set_slow_speed(speed);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -523,11 +525,11 @@ namespace cmd {
         float speed;
         bytes_to_float(&speed, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().set_fine_speed(speed);
+            m_gantry->get_x_axis()->set_fine_speed(speed);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().set_fine_speed(speed);
+            m_gantry->get_y_axis()->set_fine_speed(speed);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().set_fine_speed(speed);
+            m_gantry->get_z_axis()->set_fine_speed(speed);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -540,11 +542,11 @@ namespace cmd {
         float speed;
         bytes_to_float(&speed, cmd_buffer, 2);
         if(cmd_buffer[1] == X_AXIS) {
-            m_gantry.get_x_axis().set_acceleration(speed);
+            m_gantry->get_x_axis()->set_acceleration(speed);
         } else if(cmd_buffer[1] == Y_AXIS) {
-            m_gantry.get_y_axis().set_acceleration(speed);
+            m_gantry->get_y_axis()->set_acceleration(speed);
         } else if(cmd_buffer[1] == Z_AXIS) {
-            m_gantry.get_z_axis().set_acceleration(speed);
+            m_gantry->get_z_axis()->set_acceleration(speed);
         } else {
             send_return_value(RET_INVALID_PARAM);
             return;
@@ -558,7 +560,7 @@ namespace cmd {
         bytes_to_float(&val, cmd_buffer, 2);
         bool enable = val == 1;
         if(cmd_buffer[1] == GANTRY) {
-            m_gantry.enable_magnet(enable);
+            m_gantry->enable_magnet(enable);
         }
         else {
             send_return_value(RET_INVALID_PARAM);
@@ -572,9 +574,9 @@ namespace cmd {
         float x_posn;
         float z_posn;
         bytes_to_float(&x_posn, cmd_buffer, 2);
-        bytes_to_float(&z_posn, cmd_buffer, 3);
+        bytes_to_float(&z_posn, cmd_buffer, 6);
         if(cmd_buffer[1] == GANTRY) {
-            m_gantry.move_xz_absolute(x_posn, z_posn);
+            m_gantry->move_xz_absolute(x_posn, z_posn);
         }
         else {
             send_return_value(RET_INVALID_PARAM);
@@ -589,10 +591,10 @@ namespace cmd {
         float y_posn;
         float z_posn;
         bytes_to_float(&x_posn, cmd_buffer, 2);
-        bytes_to_float(&y_posn, cmd_buffer, 3);
-        bytes_to_float(&z_posn, cmd_buffer, 4);
+        bytes_to_float(&y_posn, cmd_buffer, 6);
+        bytes_to_float(&z_posn, cmd_buffer, 10);
         if(cmd_buffer[1] == GANTRY) {
-            m_gantry.move_xyz_absolute(x_posn, y_posn, z_posn);
+            m_gantry->move_xyz_absolute(x_posn, y_posn, z_posn);
         }
         else {
             send_return_value(RET_INVALID_PARAM);

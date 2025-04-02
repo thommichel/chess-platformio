@@ -7,7 +7,7 @@ namespace mtr {
         m_slow_speed = m_default_speed/3;
         m_fine_speed = m_default_speed/5;
         m_home_lim.setDebounceTime(10);
-        m_home_lim_hit = m_home_lim.getState();
+        m_home_lim_hit = get_home_lim();
     }
 
     void Motor::setup_driver(void (*forward_func)(), void (*backwards_func)()) {
@@ -64,14 +64,19 @@ namespace mtr {
     }
 
     void Motor::home() {
-        m_homing_state = FIRST_HOME;
         if (is_moving()) {
             return;
         }
         switch(m_homing_state) {
+            case DONE:
+                m_homing_state = FIRST_HOME;
+                break;
             case FIRST_HOME:
+                get_home_lim();
                 set_max_speed(m_slow_speed);
-                move_relative(-1000);
+                if (!m_home_lim.getStateRaw()) {
+                    move_relative(-1000);
+                }
                 m_homing_state = SECOND_APPROACH;
                 break;
             case SECOND_APPROACH:
