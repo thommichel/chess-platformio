@@ -16,7 +16,6 @@ namespace mtr {
 
             ezButton m_home_lim;
             bool m_home_lim_hit;
-            bool m_homing;
             bool m_enabled;
             uint16_t m_micro_res;
 
@@ -30,6 +29,14 @@ namespace mtr {
             uint8_t m_lead_mm;
             long _mm_to_steps(float mm);
             float _steps_to_mm(long steps);
+            enum HomingState {
+                FIRST_HOME,
+                SECOND_APPROACH,
+                SECOND_HOME,
+                DONE,
+                CLEANUP
+            };
+            HomingState m_homing_state;
         public:
             Motor();
             Motor(uint8_t select, uint8_t limit_pin, uint16_t steps_per_rev, uint8_t lead_mm, float default_acceleration, float default_speed, uint16_t motor_current, uint8_t microstep_res);

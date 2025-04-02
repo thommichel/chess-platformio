@@ -20,19 +20,20 @@
 #define LEAD_MM 8
 
 // Pin constants
-#define X_SPI_SEL 22
-#define Y_SPI_SEL 21
+#define X_SPI_SEL 21
+#define Y_SPI_SEL 22
 #define Z_SPI_SEL 2
 #define X_LIM 5
-#define Y_LIM 5
-#define Z_LIM 5
+#define Y_LIM 15
+#define Z_LIM 4
 #define ELEC_MAG 3
 
 mtr::Motor x_axis(X_SPI_SEL, X_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED_X, FOLGER_TECH_MILLIAMPS, FOLGER_TECH_MICRO_RES);
 mtr::Motor y_axis(Y_SPI_SEL, Y_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED_Y, FOLGER_TECH_MILLIAMPS, FOLGER_TECH_MICRO_RES);
 mtr::Motor z_axis(Z_SPI_SEL, Z_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED_Z, FOLGER_TECH_MILLIAMPS, FOLGER_TECH_MICRO_RES);
 
-gnt::Gantry three_dof(x_axis, y_axis, z_axis, ELEC_MAG);
+gnt::Gantry three_dof(&x_axis, &y_axis, &z_axis, ELEC_MAG);
+cmd::InputHandler input_handler(&three_dof);
 
 void x_axis_f();
 void x_axis_b();
@@ -50,24 +51,25 @@ void setup() {
 }
 
 void loop() {
-  cmd::handle_user_input(three_dof);
+  input_handler.handle_user_input();
   three_dof.update();
 }
 
 void x_axis_f() {
-  three_dof.get_x_axis()._spi_step_forward();
+  three_dof.get_x_axis()->_spi_step_forward();
 }
 void x_axis_b() {
-  three_dof.get_x_axis()._spi_step_backwards();
+  three_dof.get_x_axis()->_spi_step_backwards();
 }
 void y_axis_f() {
-  three_dof.get_y_axis()._spi_step_forward();
+  three_dof.get_y_axis()->_spi_step_forward();
 }
 void y_axis_b() {
-  three_dof.get_y_axis()._spi_step_backwards();
-}void z_axis_f() {
-  three_dof.get_z_axis()._spi_step_forward();
+  three_dof.get_y_axis()->_spi_step_backwards();
+}
+void z_axis_f() {
+  three_dof.get_z_axis()->_spi_step_forward();
 }
 void z_axis_b() {
-  three_dof.get_z_axis()._spi_step_backwards();
+  three_dof.get_z_axis()->_spi_step_backwards();
 }
