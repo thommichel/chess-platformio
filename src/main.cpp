@@ -20,13 +20,13 @@
 #define LEAD_MM 8
 
 // Pin constants
-#define X_SPI_SEL 21
-#define Y_SPI_SEL 22
+#define X_SPI_SEL 22
+#define Y_SPI_SEL 21
 #define Z_SPI_SEL 2
 #define X_LIM 5
 #define Y_LIM 15
 #define Z_LIM 4
-#define ELEC_MAG 3
+#define ELEC_MAG 17
 
 mtr::Motor x_axis(X_SPI_SEL, X_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED_X, FOLGER_TECH_MILLIAMPS, FOLGER_TECH_MICRO_RES);
 mtr::Motor y_axis(Y_SPI_SEL, Y_LIM, FOLGER_TECH_STEPS_PER_REV, LEAD_MM, FOLGER_TECH_ACCEL, FOLGER_TECH_SPEED_Y, FOLGER_TECH_MILLIAMPS, FOLGER_TECH_MICRO_RES);
@@ -45,6 +45,7 @@ void z_axis_b();
 void setup() {
   SPI.begin();
   Serial.begin(BAUD_RATE);
+  pinMode(ELEC_MAG, OUTPUT);
   delay(1);
   three_dof.setup_drivers(x_axis_f, x_axis_b, y_axis_f, y_axis_b, z_axis_f, z_axis_b);
   Serial.write("Stating C.H.E.C.K...\n");
