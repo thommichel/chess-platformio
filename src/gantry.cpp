@@ -1,7 +1,9 @@
 #include "gantry.hpp"
 namespace gnt {
     Gantry::Gantry(): m_x_axis(nullptr), m_y_axis(nullptr), m_z_axis(nullptr) {}
-    Gantry::Gantry(mtr::Motor* x_axis, mtr::Motor* y_axis, mtr::Motor* z_axis, uint8_t magnet_pin): m_x_axis(x_axis), m_y_axis(y_axis), m_z_axis(z_axis), m_magnet_pin(magnet_pin) {}
+    Gantry::Gantry(mtr::Motor* x_axis, mtr::Motor* y_axis, mtr::Motor* z_axis, uint8_t magnet_pin): m_x_axis(x_axis), m_y_axis(y_axis), m_z_axis(z_axis), m_magnet_pin(magnet_pin) {\
+        digitalWrite(m_magnet_pin, HIGH);
+    }
 
     void Gantry::home() {
         m_x_axis->home();
@@ -23,7 +25,12 @@ namespace gnt {
         m_z_axis->stop();
     }
     void Gantry::enable_magnet(bool enable) {
-        digitalWrite(m_magnet_pin, enable);
+        if (enable) {
+            digitalWrite(m_magnet_pin, LOW);
+        }
+        else {
+            digitalWrite(m_magnet_pin, HIGH);
+        }
     }
     void Gantry::update() {
         m_x_axis->update();
